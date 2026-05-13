@@ -23,6 +23,7 @@ public:
     void clearAuthorizedKey(uint8_t sector) { authorized_keys_.erase(sector); }
     const std::vector<std::pair<uint8_t, std::array<uint8_t, mifare_emission::kMifareBlockSize>>>&
     writes() const { return writes_; }
+    void clearWrites() { writes_.clear(); }
 
     void failNextRead(bool fail) { fail_next_read_ = fail; }
     void failNextWrite(bool fail) { fail_next_write_ = fail; }

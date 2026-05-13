@@ -77,7 +77,9 @@ TEST_F(AccessEngineFixture, FirstUseUnknownUidAllows) {
 
     const auto stored = store->find(uid);
     ASSERT_TRUE(stored.has_value());
-    EXPECT_EQ(stored->counter, 1u);
+    // state tracks the LAST counter the card showed (0), not the value we
+    // are about to write to the card (1).
+    EXPECT_EQ(stored->counter, 0u);
     EXPECT_EQ(stored->status, CardStatus::OK);
 }
 
@@ -91,7 +93,8 @@ TEST_F(AccessEngineFixture, GreaterCounterAllowsAndUpdates) {
     EXPECT_EQ(r.decision, Decision::ALLOW);
     EXPECT_EQ(r.old_counter, 6u);
     EXPECT_EQ(r.new_counter, 7u);
-    EXPECT_EQ(store->find(uid)->counter, 7u);
+    // state catches up to what the card showed (6).
+    EXPECT_EQ(store->find(uid)->counter, 6u);
 }
 
 TEST_F(AccessEngineFixture, EqualCounterIsReplayAndCompromises) {
@@ -193,7 +196,39 @@ TEST_F(AccessEngineFixture, RunOnceRotatesKeyAndIncrementsCounter) {
     for (std::size_t i = 0; i < kSectorKeySize; ++i) {
         EXPECT_EQ(writes[1].second[i], new_key[i]);
     }
+    EXPECT_EQ(store->find(uid)->counter, 0u);
+}
+
+TEST_F(AccessEngineFixture, TwoConsecutiveTapsBothAllow) {
+    // Regression: state.counter must lag card.counter by 1, otherwise the
+    // second legitimate tap is rejected as REPLAY.
+    MockRfidReader reader;
+    const Uid uid = {0x12, 0x34};
+    reader.setUid(uid);
+    reader.setAuthorizedKey(kCounterSector, kdf->deriveSectorKey(uid, 0));
+    reader.setBlock(kCounterBlock, encodeCounter(0));
+
+    AccessEngine engine(&reader, store.get(), kdf.get(), policy, nullptr);
+    auto r1 = engine.runOnce(local_tp(10, 0));
+    EXPECT_EQ(r1.decision, Decision::ALLOW);
+    EXPECT_EQ(store->find(uid)->counter, 0u);
+
+    // After the first ALLOW, runOnce wrote counter=1 to the card and rotated
+    // the sector key to KDF(uid, 1). The mock simulates that by capturing
+    // both writes; we now mirror the new state onto the mock for the second
+    // tap. The auth top should be stored.counter + 1 = 1 (it must succeed on
+    // the very first probe; no fallback).
+    reader.setAuthorizedKey(kCounterSector, kdf->deriveSectorKey(uid, 1));
+    reader.setBlock(kCounterBlock, encodeCounter(1));
+    reader.clearWrites();
+
+    auto r2 = engine.runOnce(local_tp(10, 1));
+    EXPECT_EQ(r2.decision, Decision::ALLOW);
+    EXPECT_EQ(r2.old_counter, 1u);
+    EXPECT_EQ(r2.new_counter, 2u);
     EXPECT_EQ(store->find(uid)->counter, 1u);
+    ASSERT_GE(reader.writes().size(), 2u);
+    EXPECT_EQ(decodeCounter(reader.writes()[0].second), 2u);
 }
 
 TEST_F(AccessEngineFixture, RunOnceDetectsClonedCard) {

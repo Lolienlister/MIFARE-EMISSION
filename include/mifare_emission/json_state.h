@@ -20,6 +20,7 @@ public:
 
     std::optional<CardState> find(const Uid& uid) const;
     void upsert(const Uid& uid, const CardState& state);
+    bool erase(const Uid& uid);
     bool markCompromised(const Uid& uid);
     bool markBlocked(const Uid& uid);
 

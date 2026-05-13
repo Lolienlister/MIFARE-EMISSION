@@ -51,6 +51,28 @@ TEST(JsonState, UpsertAndLookup) {
     EXPECT_EQ(loaded->status, CardStatus::OK);
 }
 
+TEST(JsonState, EraseRemovesEntryAndPersists) {
+    TempDir tmp;
+    const auto p = tmp.path() / "state.json";
+    const Uid uid = {0x11, 0x22};
+    {
+        JsonStateStore store(p);
+        store.load();
+        store.upsert(uid, {3, CardStatus::OK, std::chrono::system_clock::now()});
+        store.upsert({0x33, 0x44}, {9, CardStatus::OK, std::chrono::system_clock::now()});
+        EXPECT_TRUE(store.erase(uid));
+        EXPECT_FALSE(store.find(uid).has_value());
+        // Erasing again is a no-op and returns false.
+        EXPECT_FALSE(store.erase(uid));
+    }
+    {
+        JsonStateStore store(p);
+        store.load();
+        EXPECT_FALSE(store.find(uid).has_value());
+        EXPECT_TRUE(store.find({0x33, 0x44}).has_value());
+    }
+}
+
 TEST(JsonState, AtomicPersistAndReload) {
     TempDir tmp;
     const auto p = tmp.path() / "state.json";

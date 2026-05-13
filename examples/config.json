@@ -1,0 +1,14 @@
+{
+  "state_path": "state.json",
+  "log_path": "skud.log",
+  "master_key_path": "master.key",
+  "dpapi": true,
+  "reader_name": "",
+  "poll_timeout_ms": 1000,
+  "window": {
+    "start_hour": 8,
+    "start_minute": 0,
+    "end_hour": 18,
+    "end_minute": 0
+  }
+}

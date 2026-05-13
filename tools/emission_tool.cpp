@@ -30,7 +30,20 @@ namespace {
 
 void print_usage() {
     std::cout <<
-        "Usage: mifare_emission_tool <command> [args]\n"
+        "Usage: mifare_emission_tool [--plain] [--hex] <command> [args]\n"
+        "\n"
+        "Global flags (must appear BEFORE the command name):\n"
+        "  --plain  Read/write MASTER_KEY as a plain file instead of DPAPI-\n"
+        "           encrypted (Windows-only impact). The same flag (or\n"
+        "           \"dpapi\": false in config.json) MUST be used by every\n"
+        "           tool that touches the same master.key, otherwise reads\n"
+        "           will silently fail.\n"
+        "  --hex    Use with `gen-master`: write the 32-byte key as a 64-\n"
+        "           character lowercase hex string + LF instead of raw\n"
+        "           binary. Editable in Notepad. Implies --plain. The\n"
+        "           FilesystemMasterKeyVault auto-detects raw vs hex on\n"
+        "           load, so this is purely about the on-disk shape.\n"
+        "\n"
         "Commands:\n"
         "  gen-master <out_path>            Generate new MASTER_KEY (32B) and store via DPAPI/file\n"
         "  emit <state_path> <vault_path>   Initialize a freshly tapped MIFARE Classic 1K card\n"
@@ -39,6 +52,44 @@ void print_usage() {
         "                                   (Key_A=FF FF FF FF FF FF, counter=0) and erase the\n"
         "                                   matching state entry. Use BEFORE re-emitting a card.\n"
         "  revoke <state_path> <uid_hex>    Mark a UID as BLOCKED in the state\n";
+}
+
+struct VaultOptions {
+    bool plain = false;
+    bool hex   = false;
+};
+
+std::unique_ptr<IMasterKeyVault> make_vault(const std::string& path,
+                                            const VaultOptions& opts) {
+#if defined(_WIN32)
+    if (!opts.plain) {
+        return std::make_unique<DpapiMasterKeyVault>(path);
+    }
+#else
+    (void)opts;
+#endif
+    return std::make_unique<FilesystemMasterKeyVault>(path);
+}
+
+bool store_master_key_as_hex(const std::string& path, const MasterKey& key) {
+    static const char hexd[] = "0123456789abcdef";
+    std::string out;
+    out.reserve(kBeltKeySize * 2 + 1);
+    for (std::size_t i = 0; i < kBeltKeySize; ++i) {
+        out.push_back(hexd[(key[i] >> 4) & 0x0F]);
+        out.push_back(hexd[key[i] & 0x0F]);
+    }
+    out.push_back('\n');
+    const fs::path p(path);
+    const fs::path parent = p.parent_path();
+    if (!parent.empty()) {
+        std::error_code ec;
+        fs::create_directories(parent, ec);
+    }
+    std::ofstream f(p, std::ios::binary | std::ios::trunc);
+    if (!f) return false;
+    f.write(out.data(), static_cast<std::streamsize>(out.size()));
+    return static_cast<bool>(f);
 }
 
 bool generate_random(MasterKey& out) {
@@ -59,32 +110,35 @@ bool generate_random(MasterKey& out) {
 #endif
 }
 
-int cmd_gen_master(const std::string& path) {
+int cmd_gen_master(const std::string& path, const VaultOptions& opts) {
     MasterKey k{};
     if (!generate_random(k)) {
         std::cerr << "Random generation failed" << std::endl;
         return 1;
     }
-#if defined(_WIN32)
-    DpapiMasterKeyVault vault(path);
-#else
-    FilesystemMasterKeyVault vault(path);
-#endif
-    if (!vault.store(k)) {
+    if (opts.hex) {
+        if (!store_master_key_as_hex(path, k)) {
+            std::cerr << "Failed to write " << path << std::endl;
+            return 2;
+        }
+        std::cout << "MASTER_KEY stored at " << path
+                  << " (plain hex, 64 chars + LF; pass --plain to read it)" << std::endl;
+        return 0;
+    }
+    auto vault = make_vault(path, opts);
+    if (!vault->store(k)) {
         std::cerr << "Failed to write " << path << std::endl;
         return 2;
     }
-    std::cout << "MASTER_KEY stored at " << path << std::endl;
+    std::cout << "MASTER_KEY stored at " << path
+              << (opts.plain ? " (plain raw 32 bytes)" : " (DPAPI-encrypted)") << std::endl;
     return 0;
 }
 
-int cmd_emit(const std::string& state_path, const std::string& vault_path) {
-#if defined(_WIN32)
-    DpapiMasterKeyVault vault(vault_path);
-#else
-    FilesystemMasterKeyVault vault(vault_path);
-#endif
-    auto mk = vault.load();
+int cmd_emit(const std::string& state_path, const std::string& vault_path,
+             const VaultOptions& opts) {
+    auto vault = make_vault(vault_path, opts);
+    auto mk = vault->load();
     if (!mk) {
         std::cerr << "Cannot load MASTER_KEY from " << vault_path << std::endl;
         return 1;
@@ -162,13 +216,10 @@ bool try_authenticate_with_derived_key(IRfidReader& reader,
     return reader.authenticateSector(kCounterSector, used_key, MifareKeyType::KEY_A);
 }
 
-int cmd_reset(const std::string& state_path, const std::string& vault_path) {
-#if defined(_WIN32)
-    DpapiMasterKeyVault vault(vault_path);
-#else
-    FilesystemMasterKeyVault vault(vault_path);
-#endif
-    auto mk = vault.load();
+int cmd_reset(const std::string& state_path, const std::string& vault_path,
+              const VaultOptions& opts) {
+    auto vault = make_vault(vault_path, opts);
+    auto mk = vault->load();
     if (!mk) {
         std::cerr << "Cannot load MASTER_KEY from " << vault_path << std::endl;
         return 1;
@@ -276,22 +327,35 @@ int cmd_revoke(const std::string& state_path, const std::string& uid_hex) {
 }  // namespace
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
+    // Consume any number of leading global flags (--plain, --hex) before the
+    // command name. We deliberately accept them only in this position so that
+    // mistaken trailing flags don't get silently treated as state/uid args.
+    VaultOptions opts;
+    int i = 1;
+    for (; i < argc; ++i) {
+        const std::string a = argv[i];
+        if (a == "--plain") { opts.plain = true; continue; }
+        if (a == "--hex")   { opts.hex = true; opts.plain = true; continue; }
+        break;
+    }
+
+    const int rem = argc - i;
+    if (rem < 1) {
         print_usage();
         return 1;
     }
-    const std::string cmd = argv[1];
-    if (cmd == "gen-master" && argc >= 3) {
-        return cmd_gen_master(argv[2]);
+    const std::string cmd = argv[i];
+    if (cmd == "gen-master" && rem >= 2) {
+        return cmd_gen_master(argv[i + 1], opts);
     }
-    if (cmd == "emit" && argc >= 4) {
-        return cmd_emit(argv[2], argv[3]);
+    if (cmd == "emit" && rem >= 3) {
+        return cmd_emit(argv[i + 1], argv[i + 2], opts);
     }
-    if (cmd == "reset" && argc >= 4) {
-        return cmd_reset(argv[2], argv[3]);
+    if (cmd == "reset" && rem >= 3) {
+        return cmd_reset(argv[i + 1], argv[i + 2], opts);
     }
-    if (cmd == "revoke" && argc >= 4) {
-        return cmd_revoke(argv[2], argv[3]);
+    if (cmd == "revoke" && rem >= 3) {
+        return cmd_revoke(argv[i + 1], argv[i + 2]);
     }
     print_usage();
     return 1;

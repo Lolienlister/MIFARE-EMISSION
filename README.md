@@ -52,9 +52,23 @@ ctest --test-dir build --output-on-failure
 
 ## Использование
 
+> **Где хранится мастер-ключ.** По умолчанию на Windows `master.key` шифруется
+> DPAPI (`CryptProtectData`) и связан с учётной записью пользователя/машины —
+> файл нельзя редактировать, нельзя перенести на другую машину. Если вы
+> разворачиваете эксперимент / отладочную инсталляцию и хотите простой файл,
+> который можно редактировать руками, пробрасывайте `--plain` всем командам
+> утилиты и поставьте `"dpapi": false` в `config.json`. Опция `--hex`
+> дополнительно пишет ключ как 64-символьную hex-строку в текстовый файл —
+> редактируется в Notepad. Загрузчик автоматически распознаёт raw 32 байта
+> и hex (64 символа); важно только, чтобы DPAPI-режим был согласован между
+> утилитой и приложением, иначе чтение тихо отвалится. **В проде DPAPI не
+> отключайте.**
+
 1. Сгенерировать `MASTER_KEY` (один раз на инсталляцию):
    ```powershell
-   .\mifare_emission_tool.exe gen-master master.key
+   .\mifare_emission_tool.exe gen-master master.key                      # DPAPI (по умолчанию)
+   .\mifare_emission_tool.exe --plain gen-master master.key              # сырые 32 байта
+   .\mifare_emission_tool.exe --hex gen-master master.key                # hex-строка (Notepad-friendly)
    ```
 2. Эмитировать карту (положите на ридер свежую карту с factory key `FF…`):
    ```powershell
@@ -81,6 +95,14 @@ ctest --test-dir build --output-on-failure
    `KDF(uid, 0..1024)` для карт без записи в state. После успеха записывает
    trailer `KEY_A=FF FF FF FF FF FF`, `KEY_B=FF FF FF FF FF FF`, ACL по
    умолчанию и обнуляет счётчик. Запись о UID удаляется из `state.json`.
+
+Все команды утилиты понимают `--plain` (и `--hex` для `gen-master`) —
+**флаги ставятся ДО имени команды**:
+
+```powershell
+.\mifare_emission_tool.exe --plain emit  state.json master.key
+.\mifare_emission_tool.exe --plain reset state.json master.key
+```
 
 Минимальный `config.json`:
 

@@ -107,7 +107,12 @@ TransactionResult AccessEngine::decide(const Uid& uid,
     }
 
     CardState new_state{};
-    new_state.counter = counter_from_card + 1;
+    // state.counter tracks the LAST counter value the card showed.
+    // On the next tap the card will read (counter_from_card + 1) because
+    // runOnce() writes that value, so the inequality `next_card > stored`
+    // holds and we ALLOW. Storing counter_from_card + 1 here would make the
+    // next legitimate tap look like REPLAY.
+    new_state.counter = counter_from_card;
     new_state.status = CardStatus::OK;
     new_state.last_seen = now;
 
@@ -116,7 +121,7 @@ TransactionResult AccessEngine::decide(const Uid& uid,
     result.decision = Decision::ALLOW;
     result.reason = DenyReason::NONE;
     result.old_counter = counter_from_card;
-    result.new_counter = new_state.counter;
+    result.new_counter = counter_from_card + 1;
     result.state_mutated = true;
     if (logger_) logger_->info("allow " + format_decision_log(result));
     return result;
@@ -140,7 +145,11 @@ TransactionResult AccessEngine::runOnce(std::chrono::system_clock::time_point no
     result.uid = uid;
 
     auto stored = state_ ? state_->find(uid) : std::nullopt;
-    const Counter top = stored ? stored->counter : 0;
+    // After a successful tap the card has counter = stored.counter + 1 and
+    // sector key = KDF(uid, stored.counter + 1). For a brand-new card with
+    // no state entry, counter and key are both at 0. So our best guess for
+    // the current sector key is KDF(uid, top).
+    const Counter top = stored ? (stored->counter + 1) : 0;
     const Counter lookback = static_cast<Counter>(config_.max_auth_lookback);
     const Counter floor = (top > lookback) ? (top - lookback) : 0;
 

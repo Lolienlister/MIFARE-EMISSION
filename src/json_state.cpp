@@ -184,6 +184,15 @@ void JsonStateStore::upsert(const Uid& uid, const CardState& state) {
     saveLocked();
 }
 
+bool JsonStateStore::erase(const Uid& uid) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    const auto it = records_.find(uid_to_hex(uid));
+    if (it == records_.end()) return false;
+    records_.erase(it);
+    saveLocked();
+    return true;
+}
+
 bool JsonStateStore::markCompromised(const Uid& uid) {
     std::lock_guard<std::mutex> guard(mutex_);
     auto& entry = records_[uid_to_hex(uid)];

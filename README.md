@@ -52,22 +52,35 @@ ctest --test-dir build --output-on-failure
 
 ## Использование
 
-1. Сгенерировать `MASTER_KEY`:
+1. Сгенерировать `MASTER_KEY` (один раз на инсталляцию):
    ```powershell
    .\mifare_emission_tool.exe gen-master master.key
    ```
-2. Эмитировать карту (карта на ридере, factory key `FF…`):
+2. Эмитировать карту (положите на ридер свежую карту с factory key `FF…`):
    ```powershell
    .\mifare_emission_tool.exe emit state.json master.key
    ```
+   После эмиссии на карте: `counter=1`, `KEY_A=BELT-KDF(MASTER_KEY, UID, 1)`.
+   В `state.json`: `counter=0, status=OK` — на первой же транзакции инкремент
+   доводит счётчик до `2` на карте и `1` в состоянии.
 3. Запустить СКУД-loop:
    ```powershell
    .\mifare_emission_app.exe config.json
    ```
-4. Отозвать карту:
+4. Отозвать карту (UID в шестнадцатеричной форме):
    ```powershell
    .\mifare_emission_tool.exe revoke state.json AABBCCDD
    ```
+5. Сбросить карту в factory state (например, перед повторной эмиссией или
+   когда карта была случайно использована и помечена `COMPROMISED`):
+   ```powershell
+   .\mifare_emission_tool.exe reset state.json master.key
+   ```
+   Команда подбирает текущий ключ сектора с учётом `state.json`
+   (`KDF(uid, stored.counter+1)` и окно вокруг него) + brute-force-скан
+   `KDF(uid, 0..1024)` для карт без записи в state. После успеха записывает
+   trailer `KEY_A=FF FF FF FF FF FF`, `KEY_B=FF FF FF FF FF FF`, ACL по
+   умолчанию и обнуляет счётчик. Запись о UID удаляется из `state.json`.
 
 Минимальный `config.json`:
 

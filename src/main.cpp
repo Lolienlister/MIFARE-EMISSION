@@ -49,10 +49,14 @@ AppConfig load_config(const fs::path& path) {
     cfg.poll_timeout_ms = doc.value("poll_timeout_ms", cfg.poll_timeout_ms);
     if (doc.contains("window")) {
         const auto& w = doc["window"];
-        cfg.window_start.hour = w.value("start_hour", static_cast<int>(cfg.window_start.hour));
-        cfg.window_start.minute = w.value("start_minute", static_cast<int>(cfg.window_start.minute));
-        cfg.window_end.hour = w.value("end_hour", static_cast<int>(cfg.window_end.hour));
-        cfg.window_end.minute = w.value("end_minute", static_cast<int>(cfg.window_end.minute));
+        cfg.window_start.hour = static_cast<uint8_t>(
+            w.value("start_hour", static_cast<int>(cfg.window_start.hour)));
+        cfg.window_start.minute = static_cast<uint8_t>(
+            w.value("start_minute", static_cast<int>(cfg.window_start.minute)));
+        cfg.window_end.hour = static_cast<uint8_t>(
+            w.value("end_hour", static_cast<int>(cfg.window_end.hour)));
+        cfg.window_end.minute = static_cast<uint8_t>(
+            w.value("end_minute", static_cast<int>(cfg.window_end.minute)));
     }
     return cfg;
 }

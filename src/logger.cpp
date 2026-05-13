@@ -11,10 +11,10 @@ namespace {
 
 const char* level_name(LogLevel l) {
     switch (l) {
-        case LogLevel::DEBUG: return "DEBUG";
-        case LogLevel::INFO:  return "INFO";
-        case LogLevel::WARN:  return "WARN";
-        case LogLevel::ERROR: return "ERROR";
+        case LogLevel::Debug: return "DEBUG";
+        case LogLevel::Info:  return "INFO";
+        case LogLevel::Warn:  return "WARN";
+        case LogLevel::Error: return "ERROR";
     }
     return "INFO";
 }
@@ -61,7 +61,7 @@ void Logger::log(LogLevel level, const std::string& message) {
     oss << now_iso8601() << " [" << level_name(level) << "] " << message;
     const std::string line = oss.str();
 
-    if (level == LogLevel::ERROR || level == LogLevel::WARN) {
+    if (level == LogLevel::Error || level == LogLevel::Warn) {
         std::cerr << line << '\n';
     } else {
         std::cout << line << '\n';

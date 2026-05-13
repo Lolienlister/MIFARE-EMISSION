@@ -116,13 +116,18 @@ if(MIFARE_BUILD_TESTS)
         tests/test_json_state.cpp
         tests/test_access_engine.cpp
         tests/test_rfid_reader.cpp
+        tests/test_master_key_vault.cpp
         tests/mock_rfid_reader.cpp
     )
     target_include_directories(mifare_emission_tests PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/tests"
     )
     target_link_libraries(mifare_emission_tests
-        PRIVATE mifare_emission_core GTest::gtest GTest::gtest_main
+        PRIVATE
+            mifare_emission_core
+            mifare_emission_vault
+            GTest::gtest
+            GTest::gtest_main
     )
 
     include(GoogleTest)

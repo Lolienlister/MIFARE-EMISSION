@@ -1,1 +1,23 @@
 .vs/
+build/
+build-*/
+out/
+cmake-build-*/
+*.user
+*.suo
+*.sln.docstates
+*.sdf
+*.opensdf
+*.ipch
+
+# Runtime artefacts (never check in)
+master.key
+master.key.dpapi
+state.json
+skud.log
+
+# CMake / build outputs that may appear in-tree
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Testing/

@@ -1,0 +1,3 @@
+[submodule "third_party/BELT_STD"]
+	path = third_party/BELT_STD
+	url = https://github.com/MikhailSklian/BELT_STD.git

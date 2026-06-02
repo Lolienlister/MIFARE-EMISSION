@@ -1,0 +1,115 @@
+=2026-05-13T19:44:02Z [INFO] MIFARE-EMISSION SKUD starting; config=config.json
+2026-05-13T19:44:02Z [INFO] Connected to reader: ACS ACR122 0
+2026-05-13T19:44:02Z [INFO] Entering main loop
+2026-05-13T19:44:02Z [INFO] allow uid=1A8438A1 decision=ALLOW reason=NONE old_counter=1 new_counter=2 state_mutated=true
+2026-05-13T19:44:02Z [INFO] ALLOW uid=1A8438A1 counter 1->2
+2026-05-13T19:44:02Z [INFO] allow uid=1A8438A1 decision=ALLOW reason=NONE old_counter=2 new_counter=3 state_mutated=true
+2026-05-13T19:44:02Z [INFO] ALLOW uid=1A8438A1 counter 2->3
+2026-05-13T19:44:03Z [INFO] allow uid=1A8438A1 decision=ALLOW reason=NONE old_counter=3 new_counter=4 state_mutated=true
+2026-05-13T19:44:03Z [INFO] ALLOW uid=1A8438A1 counter 3->4
+2026-05-13T19:44:03Z [INFO] allow uid=1A8438A1 decision=ALLOW reason=NONE old_counter=4 new_counter=5 state_mutated=true
+2026-05-13T19:44:03Z [INFO] ALLOW uid=1A8438A1 counter 4->5
+2026-05-13T19:44:04Z [INFO] allow uid=1A8438A1 decision=ALLOW reason=NONE old_counter=5 new_counter=6 state_mutated=true
+2026-05-13T19:44:04Z [INFO] ALLOW uid=1A8438A1 counter 5->6
+2026-05-13T19:44:05Z [ERROR] authentication failed for uid=1A8438A1
+2026-05-13T19:44:05Z [WARN] DENY uid=1A8438A1 reason=CRYPTO_ERROR
+2026-05-13T19:44:10Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:10Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:10Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:10Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:11Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:11Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:11Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:11Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:12Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:12Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:12Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:12Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:13Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:13Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:13Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:13Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:14Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:14Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:14Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:14Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:15Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:15Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:15Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:15Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:19Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:19Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:19Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:19Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:30Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:30Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:30Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:30Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:31Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:31Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:31Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:31Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:32Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:32Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:32Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:32Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:33Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:33Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:40Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:40Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:41Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:41Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:41Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:41Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:42Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:42Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:42Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:42Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:44:43Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:44:43Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:21Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:21Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:26Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:26Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:39Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:39Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:40Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:40Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:40Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:40Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:41Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:41Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:41Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:41Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:42Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:42Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:42Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:42Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:43Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:43Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:45:43Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:45:43Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:54Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:54Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:55Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:55Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:55Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:55Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:56Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:56Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:56Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:56Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:57Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:57Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:57Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:57Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:58Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:58Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:58Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:58Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:59Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:59Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:55:59Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:55:59Z [WARN] DENY uid= reason=READER_ERROR
+2026-05-13T19:56:00Z [ERROR] reader.readUid: readUid failed: PC/SC error 0x80100069 on APDU FF CA 00 00 00 
+2026-05-13T19:56:00Z [WARN] DENY uid= reason=READER_ERROR
